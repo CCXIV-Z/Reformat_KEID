@@ -9,6 +9,8 @@ import socket
 import os
 import stdiomask
 
+verclient = 1
+
 def progressBar(iterable, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
     """
     Call in a loop to create terminal progress bar
@@ -217,89 +219,109 @@ if __name__ == "__main__":
         sleep(0.1)
         #print("Welcome " +socket.gethostname())
 
-    ip = "connected "+socket.gethostbyname(socket.gethostname())
-
-    print("Welcome " +socket.gethostname())
-
-    loader = Loader("Connect to server...", ip, 0.05).start()
-    for i in range(10):
-        sleep(1)
-    loader.stop()
-
-    print("Login Process")
-
-    passw = stdiomask.getpass()
-    #print(passw)
-
-    if passw == "check":
-        print(passbase)
-
-    if passbase['Pass'].eq(passw).any():
-        #items = list(range(0, 100))
-        #for item in progressBar(items, prefix = 'Encrypt HWID           :', suffix = 'Complete', length = 50):
-        #    # Do stuff...
-        #    time.sleep(0.1)
-
-        #items = list(range(0, 25))
-        #for item in progressBar(items, prefix = 'Upload HWID to server  :', suffix = 'Complete', length = 50):
-        #    # Do stuff...
-        #    time.sleep(0.1)
-
-        items = list(range(0, 10))
-        for item in progressBar(items, prefix = 'Load Key from server   :', suffix = 'Complete', length = 50):
-            # Do stuff...
-            time.sleep(0.1)
-
-        items = list(range(0, 50))
-        for item in progressBar(items, prefix = 'Load Engine from server:', suffix = 'Complete', length = 50):
-            # Do stuff...
-            time.sleep(0.1)
-
-        items = list(range(0, 100))
-        for item in progressBar(items, prefix = 'Setup                  :', suffix = 'Complete', length = 50):
-            # Do stuff...
-            time.sleep(0.1)
-
-        try:
-            reformat()
-        except FileNotFoundError:
-            print("Not Found manifest.xlsx!")
-            loader = Loader("Shutting down", "bye", 0.05).start()
-            for i in range(10):
-                sleep(1)
-            loader.stop()
-            exit()
-        except KeyError:
-            print("Original manifest wrong format!")
-            loader = Loader("Shutting down", "bye", 0.05).start()
-            for i in range(10):
-                sleep(1)
-            loader.stop()
-            exit()
-        items = list(range(0, 20))
-        for item in progressBar(items, prefix = 'Import Manifest.xlsx   :', suffix = 'Complete', length = 50):
-            # Do stuff...
-            time.sleep(0.1)
-
-        items = list(range(0, 200))
-        for item in progressBar(items, prefix = 'Reformatting           :', suffix = 'Complete', length = 50):
-            # Do stuff...
-            time.sleep(0.1)
-
-        #reformat()
-        print("All Process Complete!")
-
+    try:
+        ver = pd.read_csv('https://raw.githubusercontent.com/CCXIV-Z/Reformat_KEID/master/version.csv')
+    except:
+        print('Can not get version from server')
         loader = Loader("Shutting down", "bye", 0.05).start()
+        for i in range(10):
+            sleep(1)
+        loader.stop()   
+
+    if ver['version'].eq(verclient).any():
+        print('Version is up to date!')
+
+        ip = "connected "+socket.gethostbyname(socket.gethostname())
+
+        print("Welcome " +socket.gethostname())
+
+        loader = Loader("Connect to server...", ip, 0.05).start()
         for i in range(10):
             sleep(1)
         loader.stop()
+
+        print("Login Process")
+
+        passw = stdiomask.getpass()
+        #print(passw)
+
+        if passw == "check":
+            print(passbase)
+
+        if passbase['Pass'].eq(passw).any():
+            #items = list(range(0, 100))
+            #for item in progressBar(items, prefix = 'Encrypt HWID           :', suffix = 'Complete', length = 50):
+            #    # Do stuff...
+            #    time.sleep(0.1)
+
+            #items = list(range(0, 25))
+            #for item in progressBar(items, prefix = 'Upload HWID to server  :', suffix = 'Complete', length = 50):
+            #    # Do stuff...
+            #    time.sleep(0.1)
+
+            items = list(range(0, 10))
+            for item in progressBar(items, prefix = 'Load Key from server   :', suffix = 'Complete', length = 50):
+                # Do stuff...
+                time.sleep(0.1)
+
+            items = list(range(0, 50))
+            for item in progressBar(items, prefix = 'Load Engine from server:', suffix = 'Complete', length = 50):
+                # Do stuff...
+                time.sleep(0.1)
+
+            items = list(range(0, 100))
+            for item in progressBar(items, prefix = 'Setup                  :', suffix = 'Complete', length = 50):
+                # Do stuff...
+                time.sleep(0.1)
+
+            try:
+                reformat()
+            except FileNotFoundError:
+                print("Not Found manifest.xlsx!")
+                loader = Loader("Shutting down", "bye", 0.05).start()
+                for i in range(10):
+                    sleep(1)
+                loader.stop()
+                exit()
+            except KeyError:
+                print("Original manifest wrong format!")
+                loader = Loader("Shutting down", "bye", 0.05).start()
+                for i in range(10):
+                    sleep(1)
+                loader.stop()
+                exit()
+
+            items = list(range(0, 20))
+            for item in progressBar(items, prefix = 'Import Manifest.xlsx   :', suffix = 'Complete', length = 50):
+                # Do stuff...
+                time.sleep(0.1)
+
+            items = list(range(0, 200))
+            for item in progressBar(items, prefix = 'Reformatting           :', suffix = 'Complete', length = 50):
+                # Do stuff...
+                time.sleep(0.1)
+
+            #reformat()
+            print("All Process Complete!")
+
+            loader = Loader("Shutting down", "bye", 0.05).start()
+            for i in range(10):
+                sleep(1)
+            loader.stop()
+        else:
+            print("Password missmath!")
+            items = list(range(0, 10))
+            for item in progressBar(items, prefix = 'Upload Log and IP to server:', suffix = 'Complete', length = 50):
+                # Do stuff...
+                time.sleep(0.1)
+            loader = Loader("Shutting down", "bye", 0.05).start()
+            for i in range(10):
+                sleep(1)
+            loader.stop()
     else:
-        print("Password missmath!")
-        items = list(range(0, 10))
-        for item in progressBar(items, prefix = 'Upload Log and IP to server:', suffix = 'Complete', length = 50):
-            # Do stuff...
-            time.sleep(0.1)
+        print("version is outdated!")
+        print('Please update!')
         loader = Loader("Shutting down", "bye", 0.05).start()
         for i in range(10):
-            sleep(1)
+             sleep(1)
         loader.stop()
