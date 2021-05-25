@@ -9,7 +9,7 @@ import socket
 import os
 import stdiomask
 
-verclient = 1
+verclient = 2
 
 def progressBar(iterable, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
     """
@@ -41,10 +41,12 @@ def progressBar(iterable, prefix = '', suffix = '', decimals = 1, length = 100, 
     print()
 
 def reformat():
+
     df = pd.read_excel("manifest.xlsx")
     df = df.drop(['Outbound Time'],axis=1)
     prim = list(df.columns)[ : 33]
     df.set_index(prim,inplace=True)
+
     df[['Declared Name 1','Product Name 1','Declared Value 1','Declared QTY 1']].rename(columns={'Declared Name 1': 'Category','Product Name 1' : 'Content','Declared Value 1':'Unit Price','Declared QTY 1':'QTY'})
 
     target = pd.concat([df[['Declared Name 1','Product Name 1','Declared Value 1','Declared QTY 1']].rename(columns={'Declared Name 1': 'Category','Product Name 1' : 'Content','Declared Value 1':'Unit Price','Declared QTY 1':'QTY'}),
@@ -136,23 +138,13 @@ def reformat():
     count = suc.groupby('LM Tracking').size().reset_index(name='count')
     count.loc[(count['count']>1),'count'] = 'YES'
     count.loc[(count['count']==1),'count'] = 'NO'
-    #suc['count'] = count
 
     suc = pd.merge(suc,count,on='LM Tracking',how='inner')
-
-
-    #count.to_excel('temp.xlsx')
 
     sortcolumn = ['MAWB','LM Tracking','Sender Name','Sender Name','Sender Telephone','Sender Address','shipcountry','postcode','Receiver Name','Receiver Name','Receiver Telephone','Receiver Address','Country','Postal Code','Currency','Content','QTY','Unit Price','Total Value','count','Shipment Type','Parcel Volume','Parcel Weight(KG)','Origin','Destination','Creation','Processing','HSCODE','Category','Carton No','Package','Payment','COD']
     final=suc.reindex(columns=sortcolumn)
 
-    #print("Reformating is Complete")
     final.to_excel("reformatting sun indonesia.xlsx",index=False)
-
-
-
-
-
 
 class Loader:
     def __init__(self, desc="Loading...", end="Enviroment Available!", timeout=0.1):
