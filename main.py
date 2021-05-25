@@ -204,7 +204,7 @@ if __name__ == "__main__":
         print("Can not connect to Server")
         loader = Loader("Shutting down", "bye", 0.05).start()
         for i in range(10):
-            sleep(1)
+            sleep(0.5)
         loader.stop()
         exit()
     
@@ -230,42 +230,17 @@ if __name__ == "__main__":
 
         loader = Loader("Connect to server...", ip, 0.05).start()
         for i in range(10):
-            sleep(1)
+            sleep(0.2)
         loader.stop()
 
         print("Login Process")
 
         passw = stdiomask.getpass()
-        #print(passw)
 
         if passw == "check":
             print(passbase)
 
         if passbase['Pass'].eq(passw).any():
-            #items = list(range(0, 100))
-            #for item in progressBar(items, prefix = 'Encrypt HWID           :', suffix = 'Complete', length = 50):
-            #    # Do stuff...
-            #    time.sleep(0.1)
-
-            #items = list(range(0, 25))
-            #for item in progressBar(items, prefix = 'Upload HWID to server  :', suffix = 'Complete', length = 50):
-            #    # Do stuff...
-            #    time.sleep(0.1)
-
-            items = list(range(0, 10))
-            for item in progressBar(items, prefix = 'Load Key from server   :', suffix = 'Complete', length = 50):
-                # Do stuff...
-                time.sleep(0.1)
-
-            items = list(range(0, 50))
-            for item in progressBar(items, prefix = 'Load Engine from server:', suffix = 'Complete', length = 50):
-                # Do stuff...
-                time.sleep(0.1)
-
-            items = list(range(0, 100))
-            for item in progressBar(items, prefix = 'Setup                  :', suffix = 'Complete', length = 50):
-                # Do stuff...
-                time.sleep(0.1)
 
             try:
                 reformat()
@@ -284,12 +259,12 @@ if __name__ == "__main__":
                 loader.stop()
                 exit()
 
-            items = list(range(0, 20))
+            items = list(range(0, 5))
             for item in progressBar(items, prefix = 'Import Manifest.xlsx   :', suffix = 'Complete', length = 50):
                 # Do stuff...
                 time.sleep(0.1)
 
-            items = list(range(0, 200))
+            items = list(range(0, 10))
             for item in progressBar(items, prefix = 'Reformatting           :', suffix = 'Complete', length = 50):
                 # Do stuff...
                 time.sleep(0.1)
@@ -303,10 +278,6 @@ if __name__ == "__main__":
             loader.stop()
         else:
             print("Password missmath!")
-            items = list(range(0, 10))
-            for item in progressBar(items, prefix = 'Upload Log and IP to server:', suffix = 'Complete', length = 50):
-                # Do stuff...
-                time.sleep(0.1)
             loader = Loader("Shutting down", "bye", 0.05).start()
             for i in range(10):
                 sleep(1)
