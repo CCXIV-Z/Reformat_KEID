@@ -1,30 +1,15 @@
 import pandas as pd
-from pandas.core.reshape.concat import concat
 
-print("Reformating is inprocess")
+def reformat():
 
-df = pd.read_excel("manifest.xlsx",sheet_name="sheet1")
-df = df.drop(['Outbound Time'],axis=1)
+    df = pd.read_excel("manifest.xlsx")
+    df = df.drop(['Outbound Time'],axis=1)
+    prim = list(df.columns)[ : 33]
+    df.set_index(prim,inplace=True)
 
-print("Reformating is inprocess.")
+    df[['Declared Name 1','Product Name 1','Declared Value 1','Declared QTY 1']].rename(columns={'Declared Name 1': 'Category','Product Name 1' : 'Content','Declared Value 1':'Unit Price','Declared QTY 1':'QTY'})
 
-#box = df.filter(['HAWB No**','BOXID'])
-
-print("Reformating is inprocess..")
-
-prim = list(df.columns)[ : 33]
-
-print("Reformating is inprocess...")
-
-df.set_index(prim,inplace=True)
-
-print("Reformating is inprocess....")
-
-df[['Declared Name 1','Product Name 1','Declared Value 1','Declared QTY 1']].rename(columns={'Declared Name 1': 'Category','Product Name 1' : 'Content','Declared Value 1':'Unit Price','Declared QTY 1':'QTY'})
-
-print("Reformating is inprocess.....")
-
-target = pd.concat([df[['Declared Name 1','Product Name 1','Declared Value 1','Declared QTY 1']].rename(columns={'Declared Name 1': 'Category','Product Name 1' : 'Content','Declared Value 1':'Unit Price','Declared QTY 1':'QTY'}),
+    target = pd.concat([df[['Declared Name 1','Product Name 1','Declared Value 1','Declared QTY 1']].rename(columns={'Declared Name 1': 'Category','Product Name 1' : 'Content','Declared Value 1':'Unit Price','Declared QTY 1':'QTY'}),
                     df[['Declared Name 2','Product Name 2','Declared Value 2','Declared QTY 2']].rename(columns={'Declared Name 2': 'Category','Product Name 2' : 'Content','Declared Value 2':'Unit Price','Declared QTY 2':'QTY'}),
                     df[['Declared Name 3','Product Name 3','Declared Value 3','Declared QTY 3']].rename(columns={'Declared Name 3': 'Category','Product Name 3' : 'Content','Declared Value 3':'Unit Price','Declared QTY 3':'QTY'}),
                     df[['Declared Name 4','Product Name 4','Declared Value 4','Declared QTY 4']].rename(columns={'Declared Name 4': 'Category','Product Name 4' : 'Content','Declared Value 4':'Unit Price','Declared QTY 4':'QTY'}),
@@ -65,70 +50,58 @@ target = pd.concat([df[['Declared Name 1','Product Name 1','Declared Value 1','D
                     df[['Declared Name 39','Product Name 39','Declared Value 39','Declared QTY 39']].rename(columns={'Declared Name 39': 'Category','Product Name 39' : 'Content','Declared Value 39':'Unit Price','Declared QTY 39':'QTY'}),
                     df[['Declared Name 40','Product Name 40','Declared Value 40','Declared QTY 40']].rename(columns={'Declared Name 40': 'Category','Product Name 40' : 'Content','Declared Value 40':'Unit Price','Declared QTY 40':'QTY'})], join="inner")
 
-print("Reformating is inprocess......")
-print("Reformating is inprocess.......")
-target = target.sort_values(['Category']).reset_index()
-print("Reformating is inprocess........")
-target = pd.DataFrame(target)
-print("Reformating is inprocess.........")
-suc = target[~pd.isnull(target['Category'])]
-suc = suc.sort_values(['LM Tracking'])
-print("Reformating is inprocess..........")
+    target = target.sort_values(['Category']).reset_index()
+    target = pd.DataFrame(target)
+    suc = target[~pd.isnull(target['Category'])]
+    suc = suc.sort_values(['LM Tracking'])
+    postcode = '000000'
+    suc['postcode'] = postcode
+    total = suc['Unit Price']*suc['QTY']
+    suc['Total Value'] = total
 
-postcode = '000000'
-suc['postcode'] = postcode
+    MAWB = input("Please enter MAWB: ")
+    suc['MAWB'] = MAWB
 
-total = suc['Unit Price']*suc['QTY']
-suc['Total Value'] = total
+    Currency = 'THB'
+    suc['Currency'] = Currency
 
-MAWB = input("Please enter MAWB: ")
-suc['MAWB'] = MAWB
+    shitype = 'parcel'
+    suc['Shipment Type'] = shitype
 
-Currency = 'THB'
-suc['Currency'] = Currency
+    Origin = 'IDN'
+    suc['Origin'] = Origin
 
-shitype = 'parcel'
-suc['Shipment Type'] = shitype
+    Destination = 'BKK'
+    suc['Destination'] = Destination
 
-Origin = 'IDN'
-suc['Origin'] = Origin
+    Creation = '2021-05-16 17:00:13'
+    suc['Creation'] = Creation
+    suc['Processing'] = Creation
 
-Destination = 'BKK'
-suc['Destination'] = Destination
+    Package = ''
+    suc['Package'] = Package
 
-Creation = '2021-05-16 17:00:13'
-suc['Creation'] = Creation
-suc['Processing'] = Creation
+    COD = 0
+    suc['COD'] = COD
 
-Package = ''
-suc['Package'] = Package
+    Payment = '0'
+    suc['Payment'] = Payment
 
-COD = 0
-suc['COD'] = COD
+    HSCODE = ''
+    suc['HSCODE'] = HSCODE
 
-Payment = '0'
-suc['Payment'] = Payment
+    shipcountry = 'Indonesia'
+    suc['shipcountry'] = shipcountry
 
-HSCODE = ''
-suc['HSCODE'] = HSCODE
+    suc['Postal Code'] = suc['Postal Code'].apply(str)
 
-shipcountry = 'Indonesia'
-suc['shipcountry'] = shipcountry
+    count = suc.groupby('LM Tracking').size().reset_index(name='count')
+    count.loc[(count['count']>1),'count'] = 'YES'
+    count.loc[(count['count']==1),'count'] = 'NO'
 
-suc['Postal Code'] = suc['Postal Code'].apply(str)
+    suc = pd.merge(suc,count,on='LM Tracking',how='inner')
 
-count = suc.groupby('LM Tracking').size().reset_index(name='count')
-count.loc[(count['count']>1),'count'] = 'YES'
-count.loc[(count['count']==1),'count'] = 'NO'
-#suc['count'] = count
+    sortcolumn = ['MAWB','LM Tracking','Sender Name','Sender Name','Sender Telephone','Sender Address','shipcountry','postcode','Receiver Name','Receiver Name','Receiver Telephone','Receiver Address','Country','Postal Code','Currency','Content','QTY','Unit Price','Total Value','count','Shipment Type','Parcel Volume','Parcel Weight(KG)','Origin','Destination','Creation','Processing','HSCODE','Category','Carton No','Package','Payment','COD']
+    final=suc.reindex(columns=sortcolumn)
 
-suc = pd.merge(suc,count,on='LM Tracking',how='inner')
-
-
-count.to_excel('temp.xlsx')
-
-sortcolumn = ['MAWB','LM Tracking','Sender Name','Sender Name','Sender Telephone','Sender Address','shipcountry','postcode','Receiver Name','Receiver Name','Receiver Telephone','Receiver Address','Country','Postal Code','Currency','Content','QTY','Unit Price','Total Value','count','Shipment Type','Parcel Volume','Parcel Weight(KG)','Origin','Destination','Creation','Processing','HSCODE','Category','Carton No','Package','Payment','COD']
-final=suc.reindex(columns=sortcolumn)
-
-print("Reformating is Complete")
-final.to_excel("reformatting sun indonesia.xlsx",index=False)
+    final.to_excel("reformatting sun indonesia.xlsx",index=False)
